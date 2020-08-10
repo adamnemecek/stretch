@@ -204,7 +204,6 @@ impl Stretch {
         } else {
             todo!("not found")
         }
-
     }
 
     pub fn set_style(&mut self, node: Node, style: Style) -> Result<(), Error> {
