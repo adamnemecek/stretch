@@ -32,5 +32,8 @@ fn main() -> Result<(), Error> {
     println!("child: {:#?}", stretch.layout(child1)?);
     println!("child: {:#?}", stretch.layout(child2)?);
 
+    println!("{}", stretch.parent(child1).unwrap() == node);
+    println!("{}", stretch.parent(child2).unwrap() == child1);
+
     Ok(())
 }

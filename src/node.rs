@@ -196,13 +196,15 @@ impl Stretch {
 
     pub fn parent(&self, node: Node) -> Result<Node, Error> {
         let id = self.find_node(node)?;
-        todo!()
 
-        // Ok(elf.foret.parents[id].iter().find)
+        let parents = &self.forest.parents[id];
+        assert!(parents.len() <= 1);
+        if let Some(f) = parents.first() {
+            Ok(self.ids_to_nodes[f])
+        } else {
+            todo!("not found")
+        }
 
-        // if let Some(r) = self.forest.parents[id].iter().find(|x| true) {
-        //     Ok(self.ids_to_nodes[r])
-        // }
     }
 
     pub fn set_style(&mut self, node: Node, style: Style) -> Result<(), Error> {
