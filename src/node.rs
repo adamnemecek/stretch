@@ -194,6 +194,17 @@ impl Stretch {
         Ok(self.forest.children[id].len())
     }
 
+    pub fn parent(&self, node: Node) -> Result<Node, Error> {
+        let id = self.find_node(node)?;
+        todo!()
+
+        // Ok(elf.foret.parents[id].iter().find)
+
+        // if let Some(r) = self.forest.parents[id].iter().find(|x| true) {
+        //     Ok(self.ids_to_nodes[r])
+        // }
+    }
+
     pub fn set_style(&mut self, node: Node, style: Style) -> Result<(), Error> {
         let id = self.find_node(node)?;
         self.forest.nodes[id].style = style;
