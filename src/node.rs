@@ -1,7 +1,7 @@
 use core::ops::Drop;
 
 use crate::forest::Forest;
-use crate::geometry::Size;
+use crate::geometry::{Point, Size};
 use crate::id::{self, NodeId};
 use crate::number::Number;
 use crate::result::Layout;
@@ -239,6 +239,7 @@ impl Stretch {
         self.forest.compute_layout(id, size);
         Ok(())
     }
+
 }
 
 impl Drop for Stretch {
