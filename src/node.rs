@@ -202,7 +202,7 @@ impl Stretch {
         if let Some(f) = parents.first() {
             Ok(self.ids_to_nodes[f])
         } else {
-            todo!("not found")
+            Err(Error::InvalidNode(node))
         }
     }
 

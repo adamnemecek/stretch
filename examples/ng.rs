@@ -6,6 +6,8 @@ fn main() -> Result<(), Error> {
     let toolbar_view = stretch.new_node(
         Style {
             size: Size { width: Dimension::Percent(1.0), height: Dimension::Percent(0.25) },
+
+
             ..Default::default()
         },
         &[],
@@ -27,7 +29,11 @@ fn main() -> Result<(), Error> {
     )?;
 
     let container_view = stretch.new_node(
-        Style { size: Size { width: Dimension::Percent(1.0), height: Dimension::Percent(0.75) }, ..Default::default() },
+        Style {
+            size: Size { width: Dimension::Percent(1.0), height: Dimension::Percent(0.75) },
+            flex_direction: stretch::prelude::FlexDirection::Row,
+            ..Default::default()
+        },
         &[list_view, grid_view, inspector_view],
         // &[]
     )?;
@@ -35,7 +41,7 @@ fn main() -> Result<(), Error> {
     let root = stretch.new_node(
         Style {
             size: Size { width: Dimension::Points(800.0), height: Dimension::Points(600.0) },
-            // justify_content: JustifyContent::Center,
+            flex_direction: stretch::prelude::FlexDirection::Column,
             ..Default::default()
         },
         &[toolbar_view, container_view],
