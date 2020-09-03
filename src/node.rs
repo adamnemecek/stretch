@@ -239,7 +239,6 @@ impl Stretch {
         self.forest.compute_layout(id, size);
         Ok(())
     }
-
 }
 
 impl Drop for Stretch {

@@ -4,9 +4,7 @@ fn main() -> Result<(), Error> {
     println!("{:?}", std::mem::size_of::<stretch::prelude::Layout>());
     let mut stretch = Stretch::new();
     let child = stretch.new_node(
-        Style { size: Size { width: Dimension::Points(50.0),
-                                    height: Dimension::Points(50.0)
-        }, ..Default::default() },
+        Style { size: Size { width: Dimension::Points(50.0), height: Dimension::Points(50.0) }, ..Default::default() },
         &[],
     )?;
 
