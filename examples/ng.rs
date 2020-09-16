@@ -4,12 +4,7 @@ fn main() -> Result<(), Error> {
     println!("{:?}", std::mem::size_of::<stretch::prelude::Layout>());
     let mut stretch = Stretch::new();
     let toolbar_view = stretch.new_node(
-        Style {
-            size: Size { width: Dimension::Percent(1.0), height: Dimension::Percent(0.25) },
-
-
-            ..Default::default()
-        },
+        Style { size: Size { width: Dimension::Percent(1.0), height: Dimension::Percent(0.25) }, ..Default::default() },
         &[],
     )?;
 
