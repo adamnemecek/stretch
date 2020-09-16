@@ -1,7 +1,7 @@
 use core::ops::Drop;
 
 use crate::forest::Forest;
-use crate::geometry::{Point, Size};
+use crate::geometry::Size;
 use crate::id::{self, NodeId};
 use crate::number::Number;
 use crate::result::Layout;

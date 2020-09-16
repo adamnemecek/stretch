@@ -56,7 +56,7 @@ struct FlexLine<'a> {
 
 impl Forest {
     pub(crate) fn compute(&mut self, root: NodeId, size: Size<Number>) {
-        let root_depth = 1;
+        let root_zindex = 1;
         let root_style = self.nodes[root].style;
         let has_root_min_max = root_style.min_size.width.is_defined()
             || root_style.min_size.height.is_defined()
@@ -64,7 +64,7 @@ impl Forest {
             || root_style.max_size.height.is_defined();
 
         let result = if has_root_min_max {
-            let first_pass = self.compute_internal(root, root_style.size.resolve(size), root_depth, size, false);
+            let first_pass = self.compute_internal(root, root_style.size.resolve(size), root_zindex, size, false);
 
             self.compute_internal(
                 root,
@@ -82,15 +82,15 @@ impl Forest {
                         .maybe_min(root_style.max_size.height.resolve(size.height))
                         .into(),
                 },
-                root_depth,
+                root_zindex,
                 size,
                 true,
             )
         } else {
-            self.compute_internal(root, root_style.size.resolve(size), root_depth, size, true)
+            self.compute_internal(root, root_style.size.resolve(size), root_zindex, size, true)
         };
 
-        self.nodes[root].layout = result::Layout { order: 0, depth: 0, size: result.size, location: Point::zero() };
+        self.nodes[root].layout = result::Layout { order: 0, zindex: 0, size: result.size, location: Point::zero() };
 
         Self::round_layout(&mut self.nodes, &self.children, root, 0.0, 0.0);
     }
@@ -120,7 +120,7 @@ impl Forest {
         &mut self,
         node: NodeId,
         node_size: Size<Number>,
-        node_depth: u32,
+        node_zindex: u32,
         parent_size: Size<Number>,
         perform_layout: bool,
     ) -> ComputeResult {
@@ -332,7 +332,7 @@ impl Forest {
                         width: width.maybe_max(child.min_size.width).maybe_min(child.max_size.width),
                         height: height.maybe_max(child.min_size.height).maybe_min(child.max_size.height),
                     },
-                    node_depth + 1,
+                    node_zindex + 1,
                     available_space,
                     false,
                 )
@@ -353,7 +353,7 @@ impl Forest {
             // webkit handled various scenarios. Can probably be solved better by passing in
             // min-content max-content constraints from the top
             let min_main = self
-                .compute_internal(child.node, Size::undefined(), node_depth + 1, available_space, false)
+                .compute_internal(child.node, Size::undefined(), node_zindex + 1, available_space, false)
                 .size
                 .main(dir)
                 .maybe_max(child.min_size.main(dir))
@@ -457,7 +457,7 @@ impl Forest {
                                     .maybe_max(child.min_size.height)
                                     .maybe_min(child.max_size.height),
                             },
-                            node_depth + 1,
+                            node_zindex + 1,
                             available_space,
                             false,
                         )
@@ -599,7 +599,7 @@ impl Forest {
                     // min-content max-content constraints from the top. Need to figure out correct thing to do here as
                     // just piling on more conditionals.
                     let min_main = if is_row && self.nodes[child.node].measure.is_none() {
-                        self.compute_internal(child.node, Size::undefined(), node_depth + 1, available_space, false)
+                        self.compute_internal(child.node, Size::undefined(), node_zindex + 1, available_space, false)
                             .size
                             .width
                             .maybe_min(child.size.width)
@@ -676,7 +676,7 @@ impl Forest {
                             width: if is_row { child.target_size.width.into() } else { child_cross },
                             height: if is_row { child_cross } else { child.target_size.height.into() },
                         },
-                        node_depth + 1,
+                        node_zindex + 1,
                         Size {
                             width: if is_row { container_size.main(dir).into() } else { available_space.width },
                             height: if is_row { available_space.height } else { container_size.main(dir).into() },
@@ -724,7 +724,7 @@ impl Forest {
                                 child.target_size.height.into()
                             },
                         },
-                        node_depth + 1,
+                        node_zindex + 1,
                         Size {
                             width: if is_row { container_size.width.into() } else { node_size.width },
                             height: if is_row { node_size.height } else { container_size.height.into() },
@@ -737,7 +737,7 @@ impl Forest {
                         child.node,
                         &result::Layout {
                             order: self.children[node].iter().position(|n| *n == child.node).unwrap() as u32,
-                            depth: node_depth,
+                            zindex: node_zindex,
                             size: result.size,
                             location: Point::zero(),
                         },
@@ -1127,7 +1127,7 @@ impl Forest {
                     let result = self.compute_internal(
                         child.node,
                         child.target_size.map(|s| s.into()),
-                        node_depth + 1,
+                        node_zindex + 1,
                         container_size.map(|s| s.into()),
                         true,
                     );
@@ -1144,7 +1144,7 @@ impl Forest {
                         + (child.position.cross_start(dir).or_else(0.0) - child.position.cross_end(dir).or_else(0.0));
 
                     self.nodes[child.node].layout = result::Layout {
-                        depth: node_depth,
+                        zindex: node_zindex,
                         order: self.children[node].iter().position(|n| *n == child.node).unwrap() as u32,
                         size: result.size,
                         location: Point {
@@ -1227,7 +1227,7 @@ impl Forest {
                 let result = self.compute_internal(
                     child,
                     Size { width, height },
-                    node_depth + 1,
+                    node_zindex + 1,
                     Size { width: container_width, height: container_height },
                     true,
                 );
@@ -1294,7 +1294,7 @@ impl Forest {
                 };
 
                 self.nodes[child].layout = result::Layout {
-                    depth: node_depth,
+                    zindex: node_zindex,
                     order: order as u32,
                     size: result.size,
                     location: Point {
@@ -1310,18 +1310,18 @@ impl Forest {
             children: &[sys::ChildrenVec<NodeId>],
             node: NodeId,
             order: u32,
-            depth: u32,
+            zindex: u32,
         ) {
-            nodes[node].layout = result::Layout { order, depth, size: Size::zero(), location: Point::zero() };
+            nodes[node].layout = result::Layout { order, zindex, size: Size::zero(), location: Point::zero() };
 
             for (order, child) in children[node].iter().enumerate() {
-                hidden_layout(nodes, children, *child, order as _, depth);
+                hidden_layout(nodes, children, *child, order as _, zindex);
             }
         }
 
         for (order, child) in self.children[node].iter().enumerate() {
             if self.nodes[*child].style.display == Display::None {
-                hidden_layout(&mut self.nodes, &self.children, *child, order as _, node_depth);
+                hidden_layout(&mut self.nodes, &self.children, *child, order as _, node_zindex);
             }
         }
 

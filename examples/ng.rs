@@ -55,6 +55,8 @@ fn main() -> Result<(), Error> {
     println!("inspector_view: {:?}", stretch.layout(inspector_view)?);
     println!("container_view: {:?}", stretch.layout(container_view)?);
 
+    println!("parent: {:?}", stretch.parent(toolbar_view));
+
     // println!("child: {:#?}", stretch.layout(child)?);
     // println!("child: {:#?}", stretch.layout(child1)?);
     // println!("child: {:#?}", stretch.layout(child2)?);

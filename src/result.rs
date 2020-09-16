@@ -6,14 +6,14 @@ use crate::number::Number;
 #[derive(Copy, Debug, Clone)]
 pub struct Layout {
     pub order: u32,
-    pub depth: u32,
+    pub zindex: u32,
     pub size: Size<f32>,
     pub location: Point<f32>,
 }
 
 impl Layout {
     pub(crate) fn new() -> Self {
-        Self { order: 0, depth: 0, size: Size::zero(), location: Point::zero() }
+        Self { order: 0, zindex: 0, size: Size::zero(), location: Point::zero() }
     }
 }
 
